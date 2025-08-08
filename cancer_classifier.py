@@ -1,6 +1,6 @@
 """
 Cancer Cell Classification using Naive Bayes (Scikit‑learn)
-Author: Tonmoy Sarker
+Author: Ts42a
 """
 
 from sklearn.datasets import load_breast_cancer
