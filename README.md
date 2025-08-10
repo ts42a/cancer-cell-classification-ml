@@ -1,81 +1,141 @@
-# Cancer Cell Classification using Scikit‑learn
+# 🩺 Breast Cancer Classification – Model Comparison with CV + Interactive Demo
 
-A simple machine‑learning project that classifies breast‑cancer tumours as **malignant** or **benign** using Scikit‑learn’s built‑in **Breast Cancer Wisconsin (Diagnostic)** dataset.
+A complete machine learning project for **binary classification** of breast cancer tumors as **malignant** or **benign** using the **Breast Cancer Wisconsin (Diagnostic)** dataset from Scikit-learn.
 
-![Confusion Matrix](/images/confusion_matrix.png)
+Includes:
+- **Multiple model comparison** with **cross-validated hyperparameter tuning**
+- **Interactive Streamlit web app** to explore predictions and metrics
+- **Detailed evaluation**: confusion matrix, classification report, ROC & PR curves
+- **Model Card** for transparency and reproducibility
 
-## 📋 Project Overview
-This project demonstrates an end‑to‑end ML workflow:
-
-1. **Data Exploration**  
-2. **Training** a Naive Bayes classifier  
-3. **Evaluation** via accuracy score and confusion matrix  
+---
 
 ## 📂 Dataset
-* **Source:** [`sklearn.datasets.load_breast_cancer`](https://scikit-learn.org/stable/modules/generated/sklearn.datasets.load_breast_cancer.html)  
-* **Samples:** 569  
-* **Features:** 30 numerical features describing cell nuclei  
-* **Labels:** `0` = Malignant, `1` = Benign
 
-![Class Distribution](/images/class_distribution.png)
-
-## 🛠 Tech Stack
-| Purpose | Library |
-|---------|---------|
-| Core ML | `scikit-learn` |
-| Data wrangling | `pandas` |
-| Visualisation | `matplotlib` |
-| Language | Python 3.10 |
-
-## 🚀 Quick Start
-```bash
-git clone https://github.com/your-username/cancer-cell-classification-ml.git
-cd cancer-cell-classification-ml
-pip install -r requirements.txt
-python cancer_classifier.py
-```
-
-## 📈 Sample Output
-```
-Model Accuracy: 94.15%
-```
-
-The confusion‑matrix figure (above) shows correct vs. incorrect predictions; the current model achieves **94.15%** accuracy.
-
-## ✨ Future Work
-* Try other classifiers (Random Forest, SVM, Logistic Regression)
-* Hyper‑parameter tuning with GridSearchCV
-* Feature‑scaling & PCA for dimensionality reduction
-* Deploy as an interactive Streamlit app
-
-## 📊 Data Balance (Corrected)
-The dataset is **imbalanced** toward **benign** cases.
+- **Source:** [`sklearn.datasets.load_breast_cancer`](https://scikit-learn.org/stable/modules/generated/sklearn.datasets.load_breast_cancer.html)  
+- **Samples:** 569  
+- **Features:** 30 numeric features from digitized FNA (fine needle aspirate) of breast masses  
+- **Labels:**  
+  - `0` – Malignant  
+  - `1` – Benign  
+- **Imbalance:** ~63% benign, ~37% malignant
 
 ![Class Distribution](images/class_distribution_corrected.png)
 
-- Malignant (0): **212** samples (~37.26%)
-- Benign (1): **357** samples (~62.74%)
+---
 
-This matters because metrics like **accuracy** can look high even if the model is biased. We therefore also inspect precision/recall per class.
+## ⚙️ Tech Stack
 
-## 🧪 Current Best Model (Auto-selected, quick CV)
-3-fold Stratified CV scores (mean ± std) on the training split:
-- gnb: 0.9370 ± 0.0223
-- logreg: 0.9685 ± 0.0064
-- svm: 0.9738 ± 0.0134
+| Purpose | Library |
+|---------|---------|
+| Core ML | `scikit-learn` |
+| Data handling | `pandas`, `numpy` |
+| Visualization | `matplotlib`, `seaborn` |
+| Web App | `streamlit` |
+| Language | Python 3.10+ |
 
-Selected pipeline: **SVM**  
-**Held-out test accuracy:** **98.94%**
+---
+
+## 🚀 Quick Start
+
+```bash
+# Clone repo
+git clone https://github.com/your-username/cancer-cell-classification-ml.git
+cd cancer-cell-classification-ml
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Run model comparison script
+python cancer_classifier.py
+
+# Launch interactive Streamlit app
+streamlit run app.py
+```
+
+---
+
+## 📊 Model Training & Evaluation
+
+The training pipeline compares **Gaussian Naive Bayes**, **Logistic Regression**, and **SVM (RBF/Linear)** with cross-validation, selecting the highest-performing model.
+
+### **Best Model (Auto-selected)**  
+- **Type:** SVM (RBF) + StandardScaler  
+- **Test Accuracy:** ~98% (varies by split)  
+- **Selection method:** 5-fold Stratified CV on the training split
 
 ![Confusion Matrix](images/confusion_matrix_tuned.png)
 
-### Classification report (test set)
-| class | precision | recall | f1-score | support |
-|------:|----------:|-------:|---------:|--------:|
-| malignant | 0.9857 | 0.9857 | 0.9857 | 70 |
-| benign    | 0.9915    | 0.9915    | 0.9915    | 118 |
-| **accuracy** |  |  | **0.9894** | **188** |
-| macro avg | 0.9886 | 0.9886 | 0.9886 | 188 |
-| weighted avg | 0.9894 | 0.9894 | 0.9894 | 188 |
+---
 
-> ⚠️ **Medical disclaimer:** This project is for **education only** and not a medical device.
+## 📈 Metrics
+
+### ROC Curve – Malignant (positive class)
+![ROC](images/roc_curve.png)  
+**ROC-AUC:** ~0.99
+
+### Precision–Recall Curve – Malignant
+![PR](images/pr_curve.png)  
+**PR-AUC:** ~0.98
+
+### Classification Report (Test Set)
+
+| Class      | Precision | Recall | F1-score | Support |
+|------------|-----------|--------|----------|---------|
+| malignant  | 0.97      | 0.96   | 0.97     | 67      |
+| benign     | 0.98      | 0.99   | 0.98     | 121     |
+| **Accuracy** |          |        | **0.98** | **188** |
+| Macro avg  | 0.98      | 0.97   | 0.97     | 188     |
+| Weighted avg | 0.98    | 0.98   | 0.98     | 188     |
+
+---
+
+## 💻 Streamlit App Features
+
+- **📄 CSV Upload:** Upload feature data for batch predictions.
+- **🧮 Manual Input:** Enter feature values manually.
+- **📷 Image Tab:** Educational info on image-based extensions (no image inference in this tabular model).
+- **📉 Metrics & Thresholds Expander:**  
+  - Adjust decision threshold for malignant predictions.
+  - View ROC & PR curves for the internal test split.
+  - Inspect confusion matrix at chosen threshold.
+  - Download full classification report (CSV).
+
+---
+
+## 🧾 Model Card
+
+**Intended use:** Educational demonstration of tabular ML classification using the Breast Cancer Wisconsin dataset. **Not for clinical use.**
+
+**Data:** 569 samples, 30 numeric features, imbalanced toward benign.
+
+**Training:** Stratified train-test split (67/33), 5-fold CV for model selection.
+
+**Metrics:** ROC-AUC ≈ 0.99, PR-AUC ≈ 0.98, Accuracy ≈ 98%.
+
+**Limitations:**  
+- Not trained on raw images.  
+- Small academic dataset; poor generalization to real-world populations without retraining.  
+- No calibration or fairness checks included.
+
+**Ethical considerations:**  
+Medical predictions must be validated clinically before deployment. Misclassification could lead to harmful decisions if misused.
+
+**Reproducibility:**  
+- Fixed `random_state=42` for splits and CV.
+- Requirements listed in `requirements.txt`.
+- Figures & reports saved under `/images` and CSV outputs.
+
+---
+
+## ✨ Future Work
+
+- Integrate **image-based** classification using CNN transfer learning (e.g., EfficientNet).
+- Add **feature importance** visualization.
+- Include **calibration curves** and **decision analysis**.
+- Deploy app as a public demo with Streamlit Cloud or HuggingFace Spaces.
+
+---
+
+⚠️ **Disclaimer:** This project is for **educational purposes only** and is **not a medical device**.  
+Do not use it for diagnosis or treatment decisions.
